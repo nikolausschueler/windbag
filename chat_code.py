@@ -26,17 +26,30 @@ class ChatCode:
             """
         )
 
-    def ingest(self, path: str):
+    def ingest(self, path: str, language: str='ruby'):
         
+        knownlanguages = {'python': (Language.PYTHON, [".py"]),
+                          'ruby': (Language.RUBY, [".rb"]) }
+
+        try:
+            _language = knownlanguages[language]
+        except KeyError as e:
+            import os, sys
+            message = f'"{language}" is none of the languages I know about' + \
+                    os.linesep
+            message += f'I only know {str(knownlanguages.keys())}'
+            print(message, file=sys.stderr)
+            raise e
+
         loader = GenericLoader.from_filesystem(
             path,
             glob="**/[!.]*",
-            suffixes=[".rb"],
+            suffixes=_language[1],
             parser=LanguageParser(),
         )
 
         text_splitter = RecursiveCharacterTextSplitter.from_language(
-            language=Language.RUBY, chunk_size=1024, chunk_overlap=100)
+            language=_language[0], chunk_size=1024, chunk_overlap=100)
 
         chunks = text_splitter.split_documents(loader.load())
         chunks = filter_complex_metadata(chunks)
