@@ -1,3 +1,5 @@
+from enum import EnumMeta
+
 from langchain_community.vectorstores import Chroma
 from langchain_community.chat_models import ChatOllama
 from langchain_community.embeddings import FastEmbedEmbeddings
@@ -26,17 +28,21 @@ class ChatCode:
             """
         )
 
-    def ingest(self, path: str):
-        
+    def ingest(self, path: str, language: str='ruby', suffixes: list=None):
+
+        _language = EnumMeta.__call__(Language, language)
+        if suffixes == None:
+            suffixes = [".rb"]
+
         loader = GenericLoader.from_filesystem(
             path,
             glob="**/[!.]*",
-            suffixes=[".rb"],
+            suffixes=suffixes,
             parser=LanguageParser(),
         )
 
         text_splitter = RecursiveCharacterTextSplitter.from_language(
-            language=Language.RUBY, chunk_size=1024, chunk_overlap=100)
+            language=_language, chunk_size=1024, chunk_overlap=100)
 
         chunks = text_splitter.split_documents(loader.load())
         chunks = filter_complex_metadata(chunks)
