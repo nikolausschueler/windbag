@@ -15,8 +15,8 @@ from langchain_text_splitters import Language
 class ChatCode:
     chain = None
 
-    def __init__(self):
-        self.model = ChatOllama(model="codellama")
+    def __init__(self, model="codellama"):
+        self.model = ChatOllama(model=model)
         self.prompt = PromptTemplate.from_template(
             """
             <s> [INST] You are an expert programmer for question-answering tasks. Use the following pieces of retrieved context 
