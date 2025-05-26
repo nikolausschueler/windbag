@@ -14,3 +14,17 @@ Set up is easy! Just run
 ```bash
 % pip install langchain langchain-community
 ```
+
+## Parameters
+
+There are some parameters that can be passed to the code:
+
+* The temperature. It can be set in the constructor of `ChatCode`.
+* The model. It can also be set in the constructor of `Chatcode`.
+* The language and the file suffixes. Both can be set as parameters to the
+  `ingest()` method.
+
+To use a model, you have to download it first, using Ollama or similar tools.
+
+The suffixes are given as a list because a language may use several suffixes.
+For example, C++ may use `.h`, `.cpp` and `.cxx`.
